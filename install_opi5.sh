@@ -4,7 +4,7 @@ if id "$1" >/dev/null 2>&1; then
     echo 'user found'
 else
     echo "creating pi user"
-    useradd pi -b /home
+    useradd pi -b /home -s /usr/bin/bash
     usermod -a -G sudo pi
     mkdir /home/pi
     chown -R pi /home/pi
