@@ -4,10 +4,13 @@ if id "$1" >/dev/null 2>&1; then
     echo 'user found'
 else
     echo "creating pi user"
-    useradd pi -b /home
+    useradd pi -b /home -s /usr/bin/bash
     usermod -a -G sudo pi
     mkdir /home/pi
     chown -R pi /home/pi
+    # Don't ask for password on sudo for pi user, as on Raspberry Pi
+    echo 'pi ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/010_pi-nopasswd >/dev/null
+    chmod 0440 /etc/sudoers.d/010_pi-nopasswd
 fi
 echo "pi:raspberry" | chpasswd
 
@@ -17,7 +20,7 @@ chmod +x install.sh
 
 sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' install.sh
 
-./install.sh -n -q
+./install.sh -m -q
 rm install.sh
 
 
@@ -34,10 +37,29 @@ apt-get install -y network-manager net-tools libatomic1
 
 apt-get install -y libc6 libstdc++6
 
-# cat > /etc/netplan/00-default-nm-renderer.yaml <<EOF
-# network:
-#   renderer: NetworkManager
-# EOF
+# Fallback to a link-local IP if not connected to a network with DHCP
+cat > /etc/NetworkManager/system-connections/fallback-link-local.nmconnection <<EOF
+[connection]
+id=fallback-link-local
+uuid=3dbf658d-cf93-4a9c-a18d-8ccb6647b0d8
+type=ethernet
+autoconnect=true
+autoconnect-priority=-999
+
+[ethernet]
+
+[match]
+interface-name=en*
+
+[ipv4]
+method=link-local
+
+[ipv6]
+method=disabled
+
+[proxy]
+EOF
+chmod 0600 /etc/NetworkManager/system-connections/fallback-link-local.nmconnection
 
 if [ $(cat /etc/lsb-release | grep -c "24.04") -gt 0 ]; then
     # add jammy to apt sources 
