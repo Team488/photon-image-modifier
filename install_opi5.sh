@@ -9,7 +9,7 @@ else
     mkdir /home/pi
     chown -R pi /home/pi
     # Don't ask for password on sudo for pi user, as on Raspberry Pi
-    echo 'pi ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/010_pi-nopasswd
+    echo 'pi ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/010_pi-nopasswd >/dev/null
     chmod 0440 /etc/sudoers.d/010_pi-nopasswd
 fi
 echo "pi:raspberry" | chpasswd
