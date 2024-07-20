@@ -20,7 +20,7 @@ chmod +x install.sh
 
 sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' install.sh
 
-./install.sh -n -q
+./install.sh -m -q
 rm install.sh
 
 
@@ -37,14 +37,7 @@ apt-get install -y network-manager net-tools libatomic1
 
 apt-get install -y libc6 libstdc++6
 
-# Use NetowrkManager to support fallback to a link-local IP if not connected to a network with DHCP
-cat > /etc/netplan/00-default-nm-renderer.yaml <<EOF
-network:
-    version: 2
-    renderer: NetworkManager
-EOF
-chmod 0600 /etc/netplan/00-default-nm-renderer.yaml
-
+# Fallback to a link-local IP if not connected to a network with DHCP
 cat > /etc/NetworkManager/system-connections/fallback-link-local.nmconnection <<EOF
 [connection]
 id=fallback-link-local
