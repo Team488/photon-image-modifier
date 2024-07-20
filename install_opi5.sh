@@ -8,6 +8,9 @@ else
     usermod -a -G sudo pi
     mkdir /home/pi
     chown -R pi /home/pi
+
+    echo 'pi ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/010_pi-nopasswd >/dev/null
+    chmod 0440 /etc/sudoers.d/010_pi-nopasswd
 fi
 echo "pi:raspberry" | chpasswd
 
