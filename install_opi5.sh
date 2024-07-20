@@ -39,6 +39,28 @@ apt-get install -y libc6 libstdc++6
 #   renderer: NetworkManager
 # EOF
 
+cat > /etc/NetworkManager/system-connections/fallback-link-local.nmconnection <<EOF
+[connection]
+id=fallback-link-local
+uuid=3dbf658d-cf93-4a9c-a18d-8ccb6647b0d8
+type=ethernet
+autoconnect=true
+autoconnect-priority=-999
+
+[ethernet]
+
+[match]
+interface-name=en*
+
+[ipv4]
+method=link-local
+
+[ipv6]
+method=disabled
+
+[proxy]
+EOF
+
 if [ $(cat /etc/lsb-release | grep -c "24.04") -gt 0 ]; then
     # add jammy to apt sources 
     echo "Adding jammy to list of apt sources"
