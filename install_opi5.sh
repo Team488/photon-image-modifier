@@ -37,10 +37,13 @@ apt-get install -y network-manager net-tools libatomic1
 
 apt-get install -y libc6 libstdc++6
 
-# cat > /etc/netplan/00-default-nm-renderer.yaml <<EOF
-# network:
-#   renderer: NetworkManager
-# EOF
+# Use NetowrkManager to support fallback to a link-local IP if not connected to a network with DHCP
+cat > /etc/netplan/00-default-nm-renderer.yaml <<EOF
+network:
+    version: 2
+    renderer: NetworkManager
+EOF
+chmod 0600 /etc/netplan/00-default-nm-renderer.yaml
 
 cat > /etc/NetworkManager/system-connections/fallback-link-local.nmconnection <<EOF
 [connection]
@@ -63,6 +66,7 @@ method=disabled
 
 [proxy]
 EOF
+chmod 0600 /etc/NetworkManager/system-connections/fallback-link-local.nmconnection
 
 if [ $(cat /etc/lsb-release | grep -c "24.04") -gt 0 ]; then
     # add jammy to apt sources 
