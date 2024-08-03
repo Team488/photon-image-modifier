@@ -22,6 +22,10 @@ rm -f /var/lib/snapd/seed/seed.yaml
 apt-get purge --yes --quiet lxd-installer lxd-agent-loader
 apt-get purge --yes --quiet snapd
 
+# remove unnecessary dependencies
+apt-get purge --yes --quiet apport ubuntu-pro-client unattended-upgrades sosreport \
+    manpages-dev manpages
+
 # remove bluetooth daemon
 apt-get purge --yes --quiet bluez
 
@@ -86,6 +90,9 @@ apt-get --quiet update
 # mrcal stuff
 apt-get install --yes --quiet libcholmod3 liblapack3 libsuitesparseconfig5
 
+# python dependencies for side-loading custom scripts
+apt-get install --yes --quiet python3-pip python3-numpy
+pip install photonlibpy
 
 rm -rf /var/lib/apt/lists/*
 apt-get --yes --quiet clean
