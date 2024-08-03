@@ -90,10 +90,6 @@ apt-get --quiet update
 # mrcal stuff
 apt-get install --yes --quiet libcholmod3 liblapack3 libsuitesparseconfig5
 
-# python dependencies for side-loading custom scripts
-apt-get install --yes --quiet python3-pip python3-numpy
-pip install photonlibpy
-
 rm -rf /var/lib/apt/lists/*
 apt-get --yes --quiet clean
 
