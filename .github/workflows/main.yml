@@ -32,6 +32,8 @@ jobs:
       run: |
         sudo swapoff -a
         sudo rm -f /swapfile
+        sudo rm -rf /usr/local/lib/android
+        sudo apt-get clean
         sudo apt clean
         docker rmi $(docker image ls -aq)
         df -h
@@ -39,7 +41,7 @@ jobs:
     - uses: pguyot/arm-runner-action@HEAD
       id: install_deps
       with:
-        image_additional_mb: 1500
+        image_additional_mb: 20000
         bind_mount_repository: true
         base_image: ${{ matrix.base_image }}
         commands: |
