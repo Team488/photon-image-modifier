@@ -246,6 +246,19 @@ install_if_missing libatomic1
 install_if_missing v4l-utils
 install_if_missing sqlite3
 install_if_missing openjdk-17-jre-headless
+install_if_missing openjdk-17-jdk
+install_if_missing ninja-build
+install_if_missing protobuf-compiler
+install_if_missing libxrandr-dev
+install_if_missing libssh-dev
+install_if_missing libopencv4.5-java
+
+cat <<'EOF' >> $HOME/.bashrc
+export PATH=$PATH:/usr/local/cuda/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-arm64/
+EOF
+
 
 debug "Setting cpufrequtils to performance mode"
 if [ -f /etc/default/cpufrequtils ]; then
@@ -283,27 +296,54 @@ install_if_missing libsuitesparseconfig5
 
 debug ""
 
-if ! is_version_available "$VERSION" ; then
-  die "PhotonVision v$VERSION is not available" \
-      "See ./install --list-versions for a complete list of available versions."
-fi
+debug "downlaoding allwpiLib"
+curl -sk "https://github.com/wpilibsuite/allwpilib/archive/refs/heads/main.zip"
+unzip allwpilib-main.zip
+debug "buidling wpiLib"
+cd allwpilib-main
+cmake --preset default -DWITH_GUI=OFF -DWITH_JAVA=ON -DWITH_SIMULATION_MODULES=OFF -DWITH_TESTS=OFF -DOPENCV_JAR_FILE=/usr/share/java/opencv.jar
+cd build-cmake
+cmake --build . --parallel 4
+sudo cmake --build . --target install
+cd ..
+debug "finished building allwpilib"
 
-if [ "$VERSION" = "latest" ] ; then
-  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/latest"
-  debug "Downloading PhotonVision (latest)..."
-else
-  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/v$VERSION"
-  debug "Downloading PhotonVision (v$VERSION)..."
-fi
 
+debug "building JNI"
+curl -sk "https://github.com/FRC-Team-4143/GpuDetectorJNI/archive/refs/heads/main.zip" 
+unzip GpuDetectorJNI-main.zip
+cd GpuDetectorJNI-main
+cd third_party/apriltag
+mkdir build
+cd build
+cmake ..
+make
+cd ../../..
+mkdir build
+cd build
+cmake ..
+make
+sudo cp lib971apriltag.so /usr/lib
+cd ../..
+debug "finished building GpuDetector"
+
+debug "installing node"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+nvm install 18.20.4
+debug "installed node"
+
+debug "buiding photonvision"
 mkdir -p /opt/photonvision
 cd /opt/photonvision || die "Tried to enter /opt/photonvision, but it was not created."
-curl -sk "$RELEASE_URL" |
-    grep "browser_download_url.*$ARCH_NAME.jar" |
-    cut -d : -f 2,3 |
-    tr -d '"' |
-    wget -qi - -O photonvision.jar
-debug "Downloaded PhotonVision."
+curl -sk "https://github.com/FRC-Team-4143/photonvision/archive/refs/heads/jetson-orin.zip"
+unzip photonvision-jetson-orin.zip
+cd photonvision-jetson-orin
+cd photon-client
+npm install
+cd ..
+./gradlew buildAndCopyUI
+./gradlew shadowJar
+debug "built PhotonVision."
 
 debug "Creating the PhotonVision systemd service..."
 
@@ -330,7 +370,7 @@ Nice=-10
 # look up the right values for your CPU
 # AllowedCPUs=4-7
 
-ExecStart=/usr/bin/java -Xmx512m -jar /opt/photonvision/photonvision.jar
+ExecStart=/usr/bin/java -Xmx512m -jar /opt/photonvision/photonvision-jetson-orin/photon-server/build/libs/photonvision-dev*.jar
 ExecStop=/bin/systemctl kill photonvision
 Type=simple
 Restart=on-failure
