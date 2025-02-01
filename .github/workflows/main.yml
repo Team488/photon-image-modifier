@@ -28,6 +28,14 @@ jobs:
     - name: Fetch tags
       run: git fetch --tags --force
 
+    - name: free disk space
+      run: |
+        sudo swapoff -a
+        sudo rm -f /swapfile
+        sudo apt clean
+        docker rmi $(docker image ls -aq)
+        df -h
+
     - uses: pguyot/arm-runner-action@HEAD
       id: install_deps
       with:
