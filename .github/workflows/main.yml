@@ -17,7 +17,7 @@ jobs:
         include:
           - name: orinNano
             script: ./install_orin_nano.sh
-            base_image: https://developer.nvidia.com/downloads/embedded/l4t/r36_release_v4.3/jp62-orin-nano-sd-card-image.zip
+            base_image: https://github.com/pythops/jetson-image/actions/runs/13086710432/artifacts/2520850980
 
     name: "Build for ${{ matrix.name }}"
 
@@ -41,7 +41,7 @@ jobs:
     - uses: pguyot/arm-runner-action@HEAD
       id: install_deps
       with:
-        image_additional_mb: 20000
+        image_additional_mb: 2500
         bind_mount_repository: true
         base_image: ${{ matrix.base_image }}
         commands: |
