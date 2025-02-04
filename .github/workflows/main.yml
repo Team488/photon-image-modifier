@@ -17,7 +17,7 @@ jobs:
         include:
           - name: orinNano
             script: ./install_orin_nano.sh
-            base_image: https://github.com/pythops/jetson-image/actions/runs/13086710432/artifacts/2520850980
+            base_image: https://github.com/eljueves/jetson-image/actions/runs/13130625484/artifacts/2532485140
 
     name: "Build for ${{ matrix.name }}"
 
