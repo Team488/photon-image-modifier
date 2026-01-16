@@ -12,7 +12,7 @@ mkdir --parent /boot/firmware
 mount "${loopdev}p1" /boot/firmware
 ls -la /boot/firmware
 
-# Add the one extra file for the LL3
-wget https://datasheets.raspberrypi.org/cmio/dt-blob-cam1.bin -O /boot/firmware/dt-blob.bin
+# Install our new config.txt with OV9281 overlay
+install -m 644 limelight4/config.txt /boot/firmware
 
 umount /boot/firmware

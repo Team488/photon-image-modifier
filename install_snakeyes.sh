@@ -1,11 +1,11 @@
-#!/bin/bash -v
+#!/bin/bash
 
-# Verbose and exit on errors
-set -ex
+# Exit on errors, print commands, ignore unset variables
+set -ex +u
 
 # Run the pi install script
 chmod +x ./install_pi.sh
-./install_pi.sh
+./install_pi.sh "$1"
 
 # Add the one extra file for the snakeyes hardware config
 mkdir -p /opt/photonvision/photonvision_config
