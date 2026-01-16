@@ -106,7 +106,7 @@ rm -rf /usr/share/locale/
 # make config directory
 sudo mkdir -p /xbot/config
 
-# Update and upgrade    
+# Update and upgrade
 sudo apt-get upgrade -y
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl gnupg
