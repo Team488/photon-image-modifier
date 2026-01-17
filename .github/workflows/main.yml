@@ -1,11 +1,11 @@
 name: Build driver
 on:
   push:
-    branches: [ main ]
+    branches: [ main, Release_candidate ]
     tags:
       - 'v*'
   pull_request:
-    branches: [ main ]
+    branches: [ main, Release_candidate ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
