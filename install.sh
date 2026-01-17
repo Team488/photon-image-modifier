@@ -210,7 +210,7 @@ RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases"
 DOWNLOAD_URL=$(curl -sk "$RELEASE_URL" |
                   grep "browser_download_url.*$ARCH_NAME.jar" |
                   cut -d : -f 2,3 |
-                  tr -d '"' | 
+                  tr -d '"' |
                   head -n1
               )
 
