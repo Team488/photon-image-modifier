@@ -281,7 +281,7 @@ debug "Download URL: $DOWNLOAD_URL"
 if [[ -z $TEST ]]; then
   mkdir -p /opt/photonvision
   cd /opt/photonvision || die "Tried to enter /opt/photonvision, but it was not created."
- |echo $DOWNLOAD_URL | wget -qi - -O photonvision.jar
+  wget -q -O photonvision.jar "$DOWNLOAD_URL"
 fi
 debug "Downloaded PhotonVision."
 
