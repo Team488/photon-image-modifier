@@ -205,8 +205,14 @@ fi
 
 debug "Installing for platform $ARCH"
 
+RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases"
 
-DOWNLOAD_URL="https://github.com/PhotonVision/photonvision/releases/download/v2026.1.1-rc-3/photonvision-v2026.1.1-rc-3-linuxarm64.jar"
+DOWNLOAD_URL=$(curl -sk "$RELEASE_URL" |
+                  grep "browser_download_url.*rc.*$ARCH_NAME.jar" |
+                  cut -d : -f 2,3 |
+                  tr -d '"' | 
+                  head -n1
+              )
 
 if [[ -z $DOWNLOAD_URL ]] ; then
   die "PhotonVision '$VERSION' is not available for $ARCH_NAME!" \
