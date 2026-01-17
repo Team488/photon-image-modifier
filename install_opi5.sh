@@ -58,7 +58,7 @@ echo "Freed up $freed KiB"
 
 # run Photonvision install script
 chmod +x ./install.sh
-./install.sh --install-nm=yes --arch=aarch64
+./install.sh --install-nm=yes --arch=aarch64 --version="$1"
 
 echo "Installing additional things"
 apt-get --yes -qq install libc6 libstdc++6
@@ -102,7 +102,8 @@ apt-get --yes -qq clean
 rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
 
-# One-time setup for the Orange Pi's, needs to be connected to the internet
+# One-time setup for the# Update and upgrade
+ connected to the internet
 # make config directory
 sudo mkdir -p /xbot/config
 
