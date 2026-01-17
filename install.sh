@@ -207,7 +207,7 @@ debug "Installing for platform $ARCH"
 
 # make sure that we are downloading a valid version
 if [ "$VERSION" = "latest" ] ; then
-  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/latest"
+  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases"
 else
   RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/$VERSION"
 fi
