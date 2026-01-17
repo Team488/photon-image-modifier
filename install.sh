@@ -205,12 +205,17 @@ fi
 
 debug "Installing for platform $ARCH"
 
-RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases"
+# make sure that we are downloading a valid version
+if [ "$VERSION" = "latest" ] ; then
+  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/latest"
+else
+  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/$VERSION"
+fi
 
 DOWNLOAD_URL=$(curl -sk "$RELEASE_URL" |
-                  grep "browser_download_url.*rc.*$ARCH_NAME.jar" |
+                  grep "browser_download_url.*$ARCH_NAME.jar" |
                   cut -d : -f 2,3 |
-                  tr -d '"' |
+                  tr -d '"' | 
                   head -n1
               )
 

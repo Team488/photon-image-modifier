@@ -103,7 +103,7 @@ rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
 
 # One-time setup for the# Update and upgrade
- connected to the internet
+# connected to the internet
 # make config directory
 sudo mkdir -p /xbot/config
 
