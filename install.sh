@@ -205,23 +205,7 @@ fi
 
 debug "Installing for platform $ARCH"
 
-# make sure that we are downloading a valid version
-if [ "$VERSION" = "latest" ] ; then
-  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/latest"
-else
-  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/$VERSION"
-fi
-
-DOWNLOAD_URL=$(curl -sk "$RELEASE_URL" |
-                  grep "browser_download_url.*$ARCH_NAME.jar" |
-                  cut -d : -f 2,3 |
-                  tr -d '"'
-              )
-
-if [[ -z $DOWNLOAD_URL ]] ; then
-  die "PhotonVision '$VERSION' is not available for $ARCH_NAME!" \
-      "See ./install --list-versions for a list of available versions."
-fi
+RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases"
 
 DISTRO=$(lsb_release -is)
 
@@ -285,17 +269,19 @@ EOF
   fi
 fi
 
+DOWNLOAD_URL=$(curl -sk "https://api.github.com/repos/photonvision/photonvision/releases" |
+               grep "browser_download_url.*rc.*linuxarm64.jar" |
+               cut -d : -f 2,3 |
+               tr -d '"' |
+               head -n1)
 debug ""
 debug "Downloading PhotonVision '$VERSION'..."
+debug "Download URL: $DOWNLOAD_URL"
 
 if [[ -z $TEST ]]; then
   mkdir -p /opt/photonvision
   cd /opt/photonvision || die "Tried to enter /opt/photonvision, but it was not created."
-  curl -sk "$RELEASE_URL" |
-      grep "browser_download_url.*$ARCH_NAME.jar" |
-      cut -d : -f 2,3 |
-      tr -d '"' |
-      wget -qi - -O photonvision.jar
+  wget -O photonvision.jar $DOWNLOAD_URL
 fi
 debug "Downloaded PhotonVision."
 
