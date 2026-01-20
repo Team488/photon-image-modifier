@@ -1,5 +1,9 @@
 name: Build driver
 on:
+  workflow_dispatch:
+    branches: [ main ]
+    tags:
+      - 'v*'
   push:
     branches: [ main ]
     tags:
